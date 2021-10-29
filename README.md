@@ -34,7 +34,7 @@ $ sudo apt-get install python-catkin-tools
 ```
 $ mkdir -p rosworkspace/src
 $ cd rosworkspace/src
-$ git clone https://github.com/HesaiTechnology/HesaiLidar_General_ROS.git --recursive
+$ git clone https://github.com/fengyecl/HesaiLidar_General_ROS.git --recursive
 ```
 **Build**
 ```

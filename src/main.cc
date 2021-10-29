@@ -6,6 +6,7 @@
 #include <pcl/point_types.h>
 #include "pandarGeneral_sdk/pandarGeneral_sdk.h"
 #include <fstream>
+#include <time.h>
 // #define PRINT_FLAG 
 
 using namespace std;
@@ -108,6 +109,16 @@ public:
       pcl_conversions::toPCL(ros::Time(timestamp), cld->header.stamp);
       sensor_msgs::PointCloud2 output;
       pcl::toROSMsg(*cld, output);
+
+      struct timespec now_boot_time, now_real_time;
+      clock_gettime(CLOCK_MONOTONIC, &now_boot_time);
+      clock_gettime(CLOCK_REALTIME, &now_real_time);
+      double f_now_boot_time = now_boot_time.tv_sec + (double)now_boot_time.tv_nsec * pow(10, -9);
+      double f_now_real_time = now_real_time.tv_sec + (double)now_real_time.tv_nsec * pow(10, -9);
+      double offset = f_now_real_time - f_now_boot_time; 
+      double cld_stamp = output.header.stamp.toSec() - offset;
+      output.header.stamp = ros::Time().fromSec(cld_stamp);
+      
       lidarPublisher.publish(output);
 #ifdef PRINT_FLAG
         printf("timestamp: %f, point size: %ld.\n",timestamp, cld->points.size());

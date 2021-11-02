@@ -117,6 +117,12 @@ public:
       double f_now_real_time = now_real_time.tv_sec + (double)now_real_time.tv_nsec * pow(10, -9);
       double offset = f_now_real_time - f_now_boot_time; 
       double cld_stamp = output.header.stamp.toSec() - offset;
+      if(cld_stamp < 0.0)
+      {
+        printf("Error: real_time:%f, boot_time:%f, offset:%f, header_time:%f, cld_time:%f \n", 
+              f_now_real_time, f_now_boot_time, offset, output.header.stamp.toSec(), cld_stamp);
+        printf("Note: you need open lidar before open jetson NX \n");
+      }
       output.header.stamp = ros::Time().fromSec(cld_stamp);
       
       lidarPublisher.publish(output);
